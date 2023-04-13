@@ -5,17 +5,6 @@ import { TokenService } from './token.service'
 import { catchError, Observable, tap, throwError } from 'rxjs'
 import { environment } from '../environments/environment'
 
-const OAUTH_CLIENT = environment.appId;
-const OAUTH_SECRET = environment.appSecret;
-const API_URL = 'https://auth.calendly.com';
-
-const HTTP_OPTIONS = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/x-www-form-urlencoded',
-    Authorization: 'Basic ' + Buffer.from(OAUTH_CLIENT + ':' + OAUTH_SECRET).toString('base64')
-  })
-};
-
 @Injectable({
   providedIn: 'root'
 })
@@ -24,17 +13,28 @@ export class AuthService {
   constructor(private http: HttpClient, private tokenService: TokenService) {
   }
 
+  getCurrentUser(): Observable<any> {
+    return this.http.get(`${environment.calendlyUrl}/users/me`)
+  }
+
   login(loginData: any): Observable<any> {
     this.tokenService.removeToken();
     this.tokenService.removeRefreshToken();
     const body = new HttpParams()
       .set('grant_type', 'authorization_code')
       .set('code', loginData.code)
-      .set('redirect_uri', 'http://localhost:4200/auth');
+      .set('redirect_uri', environment.authRedirectUrl);
 
-    return this.http.post<any>(API_URL + '/oauth/token', body, HTTP_OPTIONS)
+    // I'd much rather do this in an API. I'm not happy having secrets around here
+    return this.http.post<any>(environment.calendlyAuthUrl + '/oauth/token', body, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: 'Basic ' + Buffer.from(environment.appId + ':' + environment.appSecret).toString('base64')
+      })
+    })
       .pipe(
         tap(res => {
+          console.log(res)
           this.tokenService.saveToken(res.access_token);
           this.tokenService.saveRefreshToken(res.refresh_token);
         }),
@@ -48,7 +48,12 @@ export class AuthService {
     const body = new HttpParams()
       .set('refresh_token', refreshData.refresh_token)
       .set('grant_type', 'refresh_token');
-    return this.http.post<any>(API_URL + 'oauth/token', body, HTTP_OPTIONS)
+    return this.http.post<any>(environment.calendlyAuthUrl + 'oauth/token', body, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: 'Basic ' + Buffer.from(environment.appId + ':' + environment.appSecret).toString('base64')
+      })
+    })
       .pipe(
         tap(res => {
           this.tokenService.saveToken(res.access_token);
@@ -56,18 +61,6 @@ export class AuthService {
         }),
         catchError(AuthService.handleError)
       );
-  }
-  register(data: any): Observable<any> {
-    return this.http.post<any>(API_URL + 'oauth/signup', data)
-      .pipe(
-        tap(_ => AuthService.log('register')),
-        catchError(AuthService.handleError)
-      );
-  }
-
-  secured(): Observable<any> {
-    return this.http.get<any>(API_URL + 'secret')
-      .pipe(catchError(AuthService.handleError));
   }
 
   logout(): void {
@@ -85,9 +78,5 @@ export class AuthService {
         `body was: ${error.error}`);
     }
     return throwError(() => new Error('Something bad happened; please try again later.'));
-  }
-
-  private static log(message: string): any {
-    console.log(message);
   }
 }

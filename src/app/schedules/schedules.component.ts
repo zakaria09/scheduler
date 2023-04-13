@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { SchedulesService } from '../schedules.service'
+import { CalendlyService } from '../calendly.service'
+import { AuthService } from '../auth.service'
 
 @Component({
   selector: 'app-schedules',
@@ -8,11 +9,11 @@ import { SchedulesService } from '../schedules.service'
 })
 export class SchedulesComponent {
   user: any
-  constructor(private scheduleService: SchedulesService) {
+  constructor(private authService: AuthService) {
   }
 
   ngOnInit() {
-    this.scheduleService.getCurrentUser()
+    this.authService.getCurrentUser()
       .subscribe((userResponse) => {
       this.user = userResponse.resource
     })

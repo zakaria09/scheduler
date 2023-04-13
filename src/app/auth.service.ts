@@ -26,7 +26,7 @@ export class AuthService {
       .set('redirect_uri', environment.authRedirectUrl);
 
     // I'd much rather do this in an API. I'm not happy having secrets around here
-    return this.http.post<any>(environment.calendlyAuthUrl + '/oauth/token', body, {
+    return this.http.post<any>('http://localhost:8080/auth', body, {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: 'Basic ' + Buffer.from(environment.appId + ':' + environment.appSecret).toString('base64')

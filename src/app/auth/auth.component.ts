@@ -24,8 +24,10 @@ export class AuthComponent {
     } else {
       this.route.queryParams
         .subscribe((params: any) => {
+          console.log(params);
             this.code = params.code;
             this.authService.login(params).subscribe((sub) => {
+              console.log(sub);
               if (sub.access_token) {
                 this.router.navigate(['/schedules']) .then(nav => {
                   this.code = null

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'
-import { AuthService } from '../auth.service'
 import { TokenService } from '../token.service'
+import { AuthService } from './auth.service'
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
@@ -21,13 +21,12 @@ export class AuthComponent {
   ngOnInit() {
     if(this.tokenService.getToken() !== null) {
       this.authenticated = true;
+      this.router.navigate(['/schedules'])
     } else {
       this.route.queryParams
         .subscribe((params: any) => {
-          console.log(params);
             this.code = params.code;
             this.authService.login(params).subscribe((sub) => {
-              console.log(sub);
               if (sub.access_token) {
                 this.router.navigate(['/schedules']) .then(nav => {
                   this.code = null

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http'
 import { Buffer } from 'buffer';
-import { TokenService } from './token.service'
 import { catchError, Observable, tap, throwError } from 'rxjs'
-import { environment } from '../environments/environment'
+import { TokenService } from '../token.service'
+import { environment } from '../../environments/environment'
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,10 @@ export class AuthService {
 
   getCurrentUser(): Observable<any> {
     return this.http.get(`${environment.calendlyUrl}/users/me`)
+  }
+
+  getUserSchedule(uuid: string): Observable<any> {
+    return this.http.get(`${environment.calendlyUrl}/users/${uuid}`)
   }
 
   login(loginData: any): Observable<any> {

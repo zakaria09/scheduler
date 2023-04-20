@@ -1,5 +1,20 @@
 <p>schedules!</p>
 <div *ngIf="user">
   <h1>{{user.name}}</h1>
-  <h1>{{user.uri}}</h1>
 </div>
+<div class="notification-container">
+  <h2>{{(network$| async).status}}</h2>
+  <div [class]="(network$| async).status" *ngIf="(network$| async).status === netWorkStatusOffline">OH No you are offline!!!</div>
+  <div [class]="(network$| async).status" *ngIf="(network$| async).status !== netWorkStatusOffline">Happily carry on doing stuff</div>
+</div>
+<div *ngFor="let event of events$ | async">
+  <div>{{event.description}}</div>
+  <div>{{event.date}}</div>
+</div>
+<h1>New Event</h1>
+<form [formGroup]="newEvent" (ngSubmit)="onSubmit()">
+  <input type="text" formControlName="description">
+  <input type="date" formControlName="date">
+  <button type="submit">Submit Application</button>
+</form>
+

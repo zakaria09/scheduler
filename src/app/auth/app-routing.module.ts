@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SecureComponent } from './secure/secure.component'
-import { LoginComponent } from './login/login.component'
-import { NotFoundComponent } from './not-found/not-found.component'
 import { AuthGuard } from './auth.guard'
-import { AuthComponent } from './auth/auth.component'
-import { SchedulesComponent } from './schedules/schedules.component'
+import { SecureComponent } from '../secure/secure.component'
+import { AuthComponent } from './auth.component'
+import { LoginComponent } from '../login/login.component'
+import { SchedulesComponent } from '../schedules/schedules.component'
+import { NotFoundComponent } from '../not-found/not-found.component'
 
 const routes: Routes = [
   { path: '', redirectTo: 'secure', pathMatch: 'full' },

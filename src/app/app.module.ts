@@ -9,7 +9,8 @@ import { LoginComponent } from './login/login.component';
 import { SecureComponent } from './secure/secure.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AuthComponent } from './auth/auth.component';
-import { SchedulesComponent } from './schedules/schedules.component'
+import { SchedulesComponent } from './schedules/schedules.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { SchedulesComponent } from './schedules/schedules.component'
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule
   ],
   providers: [
     {

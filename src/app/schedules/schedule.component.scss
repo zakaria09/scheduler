@@ -1,0 +1,23 @@
+.notification-container {
+  border: 1px solid #00dd00;
+  border-radius: 1.2rem;
+  padding: 1.62rem;
+  margin: 1.62rem;
+}
+
+.meetings-card {
+  margin: 1em 0;
+  max-width: 25em;
+}
+
+.active {
+  background-color: greenyellow !important;
+}
+
+.meetings-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1.5em;
+  border: red solid 3px;
+}

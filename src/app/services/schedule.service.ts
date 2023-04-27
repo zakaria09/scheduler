@@ -16,8 +16,4 @@ export class ScheduleService {
     return this.http.get(`${environment.calendlyUrl}/scheduled_events?organization=${user.current_organization}&user=${user.uri}`)
   }
 
-  getUserInfo(): Observable<any> {
-    return this.http.get(`${environment.calendlyUrl}/users/me`)
-  }
-
 }

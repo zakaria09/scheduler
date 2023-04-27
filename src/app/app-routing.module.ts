@@ -4,15 +4,15 @@ import { AuthGuard } from './auth/auth.guard'
 import { SecureComponent } from './secure/secure.component'
 import { AuthComponent } from './auth/auth.component'
 import { LoginComponent } from './login/login.component'
-import { SchedulesComponent } from './schedules/schedules.component'
+import { ScheduleComponent } from './schedules/schedule.component'
 import { NotFoundComponent } from './not-found/not-found.component'
 import { UserResolver } from './resolvers/user.resolver';
 
 const routes: Routes = [
   { path: '', redirectTo: 'secure', pathMatch: 'full' },
-  { path: 'secure', canActivate: [ AuthGuard ], component: SecureComponent },
+  { path: 'secure', canActivate: [ AuthGuard ], loadChildren: () => import('./schedules/schedule.module').then(m => m.ScheduleModule) },
   { path: 'auth', component: AuthComponent },
-  { path: 'schedules', component: SchedulesComponent, resolve: { user: UserResolver } },
+  { path: 'schedules', component: ScheduleComponent, resolve: { user: UserResolver } },
   { path: 'login', component: LoginComponent },
   { path: '404', component: NotFoundComponent },
   { path: '**', redirectTo: '404' }

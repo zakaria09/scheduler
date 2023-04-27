@@ -3,13 +3,11 @@ import { AuthService } from '../auth/auth.service'
 import { liveQuery } from 'dexie'
 import { AppDB } from '../db/db'
 import { catchError, fromEvent, map, Observable, Subscription, throwError } from 'rxjs'
-import { TokenService } from '../services/token.service'
 import { FormControl, FormGroup } from '@angular/forms'
 import cuid from 'cuid'
 import { Store } from '@ngrx/store'
 import { statusUpdate } from '../network/network.actions'
 import { NetworkStatus } from '../network/network.reducers'
-import { HttpClient } from '@angular/common/http'
 import { ScheduleService } from '../services/schedule.service';
 import { ScheduledEvent, User } from '../calendly.types'
 import { EventsPageActions } from '../ngrx/event/event.action'
@@ -29,10 +27,10 @@ async function listEvents() {
 
 @Component({
   selector: 'app-schedules',
-  templateUrl: './schedules.component.html',
-  styleUrls: ['./schedules.component.scss']
+  templateUrl: './schedule.component.html',
+  styleUrls: ['./schedule.component.scss']
 })
-export class SchedulesComponent {
+export class ScheduleComponent {
   user: any
   events$ = liveQuery(() => listEvents())
 
@@ -74,13 +72,13 @@ export class SchedulesComponent {
   netWorkStatusOffline = NetworkStatus.offline
 
   constructor(
-    private store: Store<{ count: number, network: any, event: ScheduledEvent }>,
+    private store: Store<{ count: number, network: any, events: ScheduledEvent }>,
     private schedule: ScheduleService,
     private activatedRoute: ActivatedRoute
     ) {
     this.count$ = store.select('count')
     this.network$ = store.select('network')
-    this.schedule$ = store.select('event');
+    this.schedule$ = store.select('events');
 
     this.onlineEvent = fromEvent(window, 'online');
     this.offlineEvent = fromEvent(window, 'offline');
@@ -106,7 +104,14 @@ export class SchedulesComponent {
     this.activatedRoute.data.subscribe(res => {
       const userData = (res as { user: User }).user;
       this.schedule.getScheduledEvents(userData)
-        .subscribe(res => this.store.dispatch(EventsPageActions.eventsLoaded(res)));
+        .subscribe({
+          next: res => this.store.dispatch(EventsPageActions.eventsLoaded(res)),
+          error: err =>  console.log(err)
+        }
+        );
     })
+
+    this.store.select('events')
+      .subscribe(res => console.log(res))
   }
 }

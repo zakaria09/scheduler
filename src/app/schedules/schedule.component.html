@@ -7,6 +7,24 @@
   <div [class]="(network$| async).status" *ngIf="(network$| async).status === netWorkStatusOffline">OH No you are offline!!!</div>
   <div [class]="(network$| async).status" *ngIf="(network$| async).status !== netWorkStatusOffline">Happily carry on doing stuff</div>
 </div>
+<ng-container *ngIf="(schedule$ | async)?.collection">
+  <div class="meetings-container">
+    <ng-container
+      *ngFor="let schedule of (schedule$ | async)?.collection">
+      <mat-card class="meetings-card">
+        <mat-card-header>{{ schedule.name }}</mat-card-header>
+        <mat-card-subtitle>
+          <mat-chip
+          [class.active]="{active: schedule.status === 'active'}"
+          >{{ schedule.status }}</mat-chip>
+        </mat-card-subtitle>
+        <mat-card-content>
+
+        </mat-card-content>
+      </mat-card>
+    </ng-container>
+  </div>
+</ng-container>
 <div *ngFor="let event of events$ | async">
   <div>{{event.description}}</div>
   <div>{{event.date}}</div>

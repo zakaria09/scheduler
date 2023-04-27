@@ -9,16 +9,16 @@ import { LoginComponent } from './login/login.component';
 import { SecureComponent } from './secure/secure.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AuthComponent } from './auth/auth.component';
-import { SchedulesComponent } from './schedules/schedules.component'
+import { ScheduleComponent } from './schedules/schedule.component'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { AppRoutingModule } from './app-routing.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { StoreModule } from '@ngrx/store'
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { counterReducer } from './schedules/schedules.reducer'
 import { networkReducer } from './network/network.reducers';
 import { environment } from 'src/environments/environment';
 import { EventModule } from './ngrx/event/event.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -26,8 +26,7 @@ import { EventModule } from './ngrx/event/event.module';
     LoginComponent,
     SecureComponent,
     NotFoundComponent,
-    AuthComponent,
-    SchedulesComponent
+    AuthComponent
   ],
   imports: [
     BrowserModule,
@@ -41,11 +40,12 @@ import { EventModule } from './ngrx/event/event.module';
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
     }),
-    StoreModule.forRoot({ count: counterReducer, network: networkReducer  }, {}),
+    StoreModule.forRoot({ network: networkReducer  }, {}),
     StoreDevtoolsModule.instrument({
       maxAge: 5
     }),
-    EventModule
+    EventModule,
+    BrowserAnimationsModule
   ],
   providers: [
     {

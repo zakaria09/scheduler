@@ -7,7 +7,7 @@ import { eventReducer } from './event.reducer';
   declarations: [],
   imports: [
     CommonModule,
-    StoreModule.forFeature('ScheduledEvent', eventReducer)
+    StoreModule.forFeature('events', eventReducer)
   ]
 })
 export class EventModule { }

@@ -12,9 +12,12 @@
   <div>{{event.date}}</div>
 </div>
 <h1>New Event</h1>
-<form [formGroup]="newEvent" (ngSubmit)="onSubmit()">
+<!-- Calendly inline widget begin -->
+<div class="calendly-inline-widget" data-url="https://calendly.com/zakaria09/30min" style="min-width:320px;height:630px;"></div>
+<!-- Calendly inline widget end -->
+<!-- <form [formGroup]="newEvent" (ngSubmit)="onSubmit()">
   <input type="text" formControlName="description">
   <input type="date" formControlName="date">
   <button type="submit">Submit Application</button>
-</form>
+</form> -->
 

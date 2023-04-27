@@ -25,6 +25,6 @@ app.post('/auth', async (req, res, next) => {
     // res.send('This is a proxy service which proxies to Billing and Account APIs.');
 });
 
-var server = app.listen(8080, function() {
-    console.log("Backend Application listening at http://localhost:8080")
+var server = app.listen(3000, function() {
+    console.log("Backend Application listening at http://localhost:3000")
 })

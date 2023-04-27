@@ -3,13 +3,17 @@ import { AuthService } from '../auth/auth.service'
 import { liveQuery } from 'dexie'
 import { AppDB } from '../db/db'
 import { catchError, fromEvent, map, Observable, Subscription, throwError } from 'rxjs'
-import { TokenService } from '../token.service'
+import { TokenService } from '../services/token.service'
 import { FormControl, FormGroup } from '@angular/forms'
 import cuid from 'cuid'
-import { decrement, increment, reset } from './schedules.actions'
 import { Store } from '@ngrx/store'
 import { statusUpdate } from '../network/network.actions'
 import { NetworkStatus } from '../network/network.reducers'
+import { HttpClient } from '@angular/common/http'
+import { ScheduleService } from '../services/schedule.service';
+import { ScheduledEvent, User } from '../calendly.types'
+import { EventsPageActions } from '../ngrx/event/event.action'
+import { ActivatedRoute } from '@angular/router'
 
 const db = new AppDB()
 
@@ -57,6 +61,7 @@ export class SchedulesComponent {
   })
   count$: Observable<number>
   network$: Observable<any>
+  schedule$: Observable<ScheduledEvent> | undefined;
 
   onSubmit = async () => {
     await db.events.add({
@@ -68,9 +73,14 @@ export class SchedulesComponent {
   }
   netWorkStatusOffline = NetworkStatus.offline
 
-  constructor(private authService: AuthService, private tokenService: TokenService, private store: Store<{ count: number, network: any }>) {
+  constructor(
+    private store: Store<{ count: number, network: any, event: ScheduledEvent }>,
+    private schedule: ScheduleService,
+    private activatedRoute: ActivatedRoute
+    ) {
     this.count$ = store.select('count')
     this.network$ = store.select('network')
+    this.schedule$ = store.select('event');
 
     this.onlineEvent = fromEvent(window, 'online');
     this.offlineEvent = fromEvent(window, 'offline');
@@ -93,23 +103,10 @@ export class SchedulesComponent {
   ngOnInit() {
     this.handleAppConnectivityChanges();
 
-    this.authService.getCurrentUser().pipe(
-      map(res => res),
-      catchError((error) => {
-        this.tokenService.removeToken()
-        this.tokenService.removeRefreshToken()
-        return throwError(error)
-      })
-    ).subscribe({
-      next: (userResponse) => {
-        this.user = userResponse.resource
-        db.logins.add(userResponse.resource)
-        const urlSplit = userResponse.resource.uri.split('/')
-        const lengthOfSplit = urlSplit.length
-        this.authService.getUserSchedule(urlSplit[lengthOfSplit - 1])
-          .subscribe((schedule) => console.log(schedule))
-      },
-      error: (error) => console.error(error)
+    this.activatedRoute.data.subscribe(res => {
+      const userData = (res as { user: User }).user;
+      this.schedule.getScheduledEvents(userData)
+        .subscribe(res => this.store.dispatch(EventsPageActions.eventsLoaded(res)));
     })
   }
 }

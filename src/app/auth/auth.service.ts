@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http'
 import { Buffer } from 'buffer';
 import { catchError, Observable, tap, throwError } from 'rxjs'
-import { TokenService } from '../token.service'
+import { TokenService } from '../services/token.service'
 import { environment } from '../../environments/environment'
 
 @Injectable({
@@ -30,7 +30,7 @@ export class AuthService {
       .set('redirect_uri', environment.authRedirectUrl);
 
     // I'd much rather do this in an API. I'm not happy having secrets around here
-    return this.http.post<any>('http://localhost:8080/auth', body, {
+    return this.http.post<any>('http://localhost:3000/auth', body, {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: 'Basic ' + Buffer.from(environment.appId + ':' + environment.appSecret).toString('base64')
